@@ -6,6 +6,8 @@ interface UseProductsOptions {
   search?: string;
   featured?: boolean;
   active?: boolean;
+  minPrice?: number;
+  maxPrice?: number;
 }
 
 interface UseProductsReturn {
@@ -46,6 +48,14 @@ export function useProducts(options: UseProductsOptions = {}): UseProductsReturn
       if (options.active !== undefined) {
         params.append('active', options.active.toString());
       }
+      
+      if (options.minPrice !== undefined) {
+        params.append('minPrice', options.minPrice.toString());
+      }
+      
+      if (options.maxPrice !== undefined) {
+        params.append('maxPrice', options.maxPrice.toString());
+      }
 
       // Fetch products with query parameters
       const response = await fetch(`/api/products?${params.toString()}`);
@@ -71,7 +81,7 @@ export function useProducts(options: UseProductsOptions = {}): UseProductsReturn
 
   useEffect(() => {
     fetchProducts();
-  }, [options.categoryId, options.search, options.featured, options.active]);
+  }, [options.categoryId, options.search, options.featured, options.active, options.minPrice, options.maxPrice]);
 
   return {
     products,

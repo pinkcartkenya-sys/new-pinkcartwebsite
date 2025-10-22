@@ -41,19 +41,30 @@ export function CountdownTimer({ targetDate }: CountdownTimerProps) {
       <div className="flex items-center gap-2">
         <span className="text-sm font-medium text-muted-foreground">Shipment closes in:</span>
         <div className="flex gap-2">
-          {[
-            { value: timeLeft.days, label: "d" },
-            { value: timeLeft.hours, label: "h" },
-            { value: timeLeft.minutes, label: "m" },
-            { value: timeLeft.seconds, label: "s" },
-          ].map((item, index) => (
-            <div key={index} className="flex items-baseline gap-1">
+          {timeLeft.days >= 5 ? (
+            <div className="flex items-baseline gap-1">
               <span className="text-2xl font-bold" style={{ fontFamily: "var(--font-fredoka)" }}>
-                {String(item.value).padStart(2, "0")}
+                {timeLeft.days}
               </span>
-              <span className="text-sm text-muted-foreground">{item.label}</span>
+              <span className="text-sm text-muted-foreground">
+                {timeLeft.days === 1 ? "day" : "days"}
+              </span>
             </div>
-          ))}
+          ) : (
+            [
+              { value: timeLeft.days, label: "d" },
+              { value: timeLeft.hours, label: "h" },
+              { value: timeLeft.minutes, label: "m" },
+              { value: timeLeft.seconds, label: "s" },
+            ].map((item, index) => (
+              <div key={index} className="flex items-baseline gap-1">
+                <span className="text-2xl font-bold" style={{ fontFamily: "var(--font-fredoka)" }}>
+                  {String(item.value).padStart(2, "0")}
+                </span>
+                <span className="text-sm text-muted-foreground">{item.label}</span>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

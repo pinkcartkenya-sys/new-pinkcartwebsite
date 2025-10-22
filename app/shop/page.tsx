@@ -3,16 +3,22 @@
 import { useState } from "react"
 import { Header } from "@/components/header"
 import { ProductCard } from "@/components/product-card"
+import { JoinNotification } from "@/components/join-notification"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Heart, Package, Sparkles, Users, Loader2, ChevronDown, ChevronUp, BookOpen } from "lucide-react"
+import { Slider } from "@/components/ui/slider"
+import { Heart, Package, Sparkles, Users, Loader2, ChevronDown, ChevronUp, BookOpen, Filter } from "lucide-react"
 import { useProducts, useCategories } from "@/hooks/use-products"
+import { useJoinNotifications } from "@/hooks/use-join-notifications"
 import { Category } from "@/lib/db"
 
 export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [showCategories, setShowCategories] = useState(false)
+  const [showPriceFilter, setShowPriceFilter] = useState(false)
+  const [priceRange, setPriceRange] = useState([0, 10000])
+  const [hasPriceFilter, setHasPriceFilter] = useState(false)
 
   // Fetch categories from database
   const { categories, loading: categoriesLoading, error: categoriesError } = useCategories()
@@ -25,12 +31,18 @@ export default function ShopPage() {
     refetch 
   } = useProducts({
     categoryId: selectedCategory === "all" ? undefined : selectedCategory,
-    search: searchQuery.trim() !== '' ? searchQuery : undefined
+    search: searchQuery.trim() !== '' ? searchQuery : undefined,
+    minPrice: priceRange[0],
+    maxPrice: priceRange[1]
   })
+
+  // Join notifications
+  const { currentNotification, isVisible, closeNotification } = useJoinNotifications(products)
 
   // Debug logging
   console.log('Shop page - selectedCategory:', selectedCategory);
   console.log('Shop page - searchQuery:', searchQuery);
+  console.log('Shop page - priceRange:', priceRange);
   console.log('Shop page - Products:', products);
   console.log('Shop page - Loading:', productsLoading);
   console.log('Shop page - Error:', productsError);
@@ -52,6 +64,18 @@ export default function ShopPage() {
     setSelectedCategory(categoryId)
     setSearchQuery("") // Clear search when changing category
     // The useProducts hook will automatically refetch with the new categoryId
+  }
+
+  const handlePriceRangeChange = (newRange: number[]) => {
+    console.log('Price range changed:', newRange);
+    setPriceRange(newRange)
+    setHasPriceFilter(newRange[0] > 0 || newRange[1] < 10000)
+    // The useProducts hook will automatically refetch with the new price range
+  }
+
+  const resetPriceFilter = () => {
+    setPriceRange([0, 10000])
+    setHasPriceFilter(false)
   }
 
   const handleSearch = (e: React.FormEvent) => {
@@ -206,6 +230,94 @@ export default function ShopPage() {
               </>
             )}
           </div>
+
+          {/* Price Filter */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-muted-foreground">
+                Price Range {hasPriceFilter && <span className="text-primary">(Filtered)</span>}
+              </h3>
+              <div className="flex items-center gap-2">
+                <div className="text-xs text-muted-foreground">
+                  KSh {priceRange[0].toLocaleString()} - KSh {priceRange[1].toLocaleString()}
+                </div>
+                {hasPriceFilter && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={resetPriceFilter}
+                    className="rounded-full text-xs"
+                  >
+                    Reset
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowPriceFilter(!showPriceFilter)}
+                  className="rounded-full"
+                >
+                  <Filter className="h-3 w-3 mr-1" />
+                  {showPriceFilter ? "Hide" : "Filter"}
+                </Button>
+              </div>
+            </div>
+            
+            {showPriceFilter && (
+              <Card className="p-4">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>KSh {priceRange[0].toLocaleString()}</span>
+                      <span>KSh {priceRange[1].toLocaleString()}</span>
+                    </div>
+                    <Slider
+                      value={priceRange}
+                      onValueChange={handlePriceRangeChange}
+                      max={10000}
+                      min={0}
+                      step={100}
+                      className="w-full"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePriceRangeChange([0, 1000])}
+                      className="text-xs"
+                    >
+                      Under KSh 1,000
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePriceRangeChange([1000, 3000])}
+                      className="text-xs"
+                    >
+                      KSh 1,000 - 3,000
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePriceRangeChange([3000, 5000])}
+                      className="text-xs"
+                    >
+                      KSh 3,000 - 5,000
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePriceRangeChange([0, 10000])}
+                      className="text-xs"
+                    >
+                      All Prices
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            )}
+          </div>
         </div>
       </section>
 
@@ -224,17 +336,33 @@ export default function ShopPage() {
                 {productsLoading ? "Loading..." : `${products.length} cute finds available`}
               </p>
             </div>
-            {selectedCategory !== "all" && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleCategoryChange("all")}
-                className="rounded-full"
-              >
-                <Sparkles className="h-4 w-4 mr-2" />
-                View All
-              </Button>
-            )}
+            <div className="flex gap-2">
+              {selectedCategory !== "all" && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleCategoryChange("all")}
+                  className="rounded-full"
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  View All
+                </Button>
+              )}
+              {(hasPriceFilter || searchQuery) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    handleCategoryChange("all")
+                    setSearchQuery("")
+                    resetPriceFilter()
+                  }}
+                  className="rounded-full"
+                >
+                  Clear All Filters
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -378,6 +506,13 @@ export default function ShopPage() {
           </div>
         </div>
       </footer>
+
+      {/* Join Notification */}
+      <JoinNotification
+        isVisible={isVisible}
+        onClose={closeNotification}
+        product={currentNotification?.product || null}
+      />
     </div>
   )
 }

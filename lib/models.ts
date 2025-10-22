@@ -89,6 +89,8 @@ export class Database {
     search?: string;
     featured?: boolean;
     active?: boolean;
+    minPrice?: number;
+    maxPrice?: number;
   } = {}): Promise<Product[]> {
     try {
       const collection = await this.getCollection('products');
@@ -126,6 +128,17 @@ export class Database {
 
       if (filters.active !== undefined) {
         query.isActive = filters.active;
+      }
+
+      if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
+        query.price = {};
+        if (filters.minPrice !== undefined) {
+          query.price.$gte = filters.minPrice;
+        }
+        if (filters.maxPrice !== undefined) {
+          query.price.$lte = filters.maxPrice;
+        }
+        console.log('Database - Price filter applied:', query.price);
       }
 
       // Sort by createdAt in descending order (latest first)

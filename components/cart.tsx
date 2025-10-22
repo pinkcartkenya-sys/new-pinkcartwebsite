@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { OrderForm } from "@/components/order-form"
 import { Minus, Plus, ShoppingCart, Trash2, X, Heart, ArrowRight, Sparkles } from "lucide-react"
 import Image from "next/image"
 import { useCart } from "@/lib/cart-context"
@@ -12,6 +13,7 @@ import { useCart } from "@/lib/cart-context"
 export function Cart() {
   const { items, removeFromCart, updateQuantity, clearCart, getTotalItems, getTotalPrice } = useCart()
   const [isOpen, setIsOpen] = useState(false)
+  const [showOrderForm, setShowOrderForm] = useState(false)
 
   const handleQuantityChange = (id: string, delta: number) => {
     const item = items.find(item => item.id === id)
@@ -22,9 +24,13 @@ export function Cart() {
   }
 
   const handleCheckout = () => {
-    // TODO: Implement checkout functionality
-    console.log('Proceeding to checkout with items:', items)
-    alert('Checkout functionality will be implemented soon!')
+    setShowOrderForm(true)
+  }
+
+  const handleOrderComplete = () => {
+    setShowOrderForm(false)
+    setIsOpen(false)
+    clearCart() // Clear cart after successful order
   }
 
   return (
@@ -191,9 +197,9 @@ export function Cart() {
                         KSh {getTotalPrice().toLocaleString()}
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground text-center">
-                      {getTotalItems()} {getTotalItems() === 1 ? 'item' : 'items'} • Free shipping on orders over KSh 5,000
-                    </p>
+                           <p className="text-sm text-muted-foreground text-center">
+                             {getTotalItems()} {getTotalItems() === 1 ? 'item' : 'items'}
+                           </p>
                   </div>
 
                   {/* Action Buttons */}
@@ -204,7 +210,7 @@ export function Cart() {
                       size="lg"
                     >
                       <Sparkles className="h-5 w-5 mr-2" />
-                      Proceed to Checkout
+                      Proceed to Order
                       <ArrowRight className="h-5 w-5 ml-2" />
                     </Button>
                     
@@ -222,6 +228,15 @@ export function Cart() {
           )}
         </div>
       </SheetContent>
+
+      {/* Order Form */}
+      <OrderForm
+        isOpen={showOrderForm}
+        onClose={handleOrderComplete}
+        items={items}
+        totalPrice={getTotalPrice()}
+        totalItems={getTotalItems()}
+      />
     </Sheet>
   )
 }

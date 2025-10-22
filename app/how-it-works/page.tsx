@@ -93,7 +93,7 @@ export default function HowItWorksPage() {
                 description:
                   "Explore our curated collection of cute finds from China. Each product shows how many people have already joined the order and the savings you'll get from group shipping. Add items to your cart and proceed to checkout.",
                 details: [
-                  "Browse by category: Girly Finds, Dorm Essentials, Tech & Accessories",
+                  "Browse by category: Shoes, Bags, Accessories, Organisers, Journal, Cute Lighting",
                   "See real-time updates on how many people joined each order",
                   "Check the countdown timer to see when the shipment closes",
                   "Read product descriptions and customer reviews",
@@ -107,7 +107,7 @@ export default function HowItWorksPage() {
                 description:
                   "Complete your payment to secure your spot in the group shipment. Your items are reserved, and you'll be added to our WhatsApp group for live updates. The more people who join, the lower the shipping cost for everyone!",
                 details: [
-                  "Pay securely via M-Pesa, card, or PayPal",
+                  "Pay securely via M-Pesa",
                   "Get instant confirmation and order number",
                   "Join our WhatsApp community for updates",
                   "Track the shipment progress in real-time",
@@ -301,21 +301,36 @@ export default function HowItWorksPage() {
             </div>
 
             <div>
-              <h4 className="mb-4 font-semibold">Shop</h4>
+              <h4 className="mb-4 font-semibold">Browse</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <Link href="/shop?category=girly" className="hover:text-primary">
-                    Girly Finds
+                  <Link href="/shop?category=shoes" className="hover:text-primary">
+                    Shoes
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shop?category=dorm" className="hover:text-primary">
-                    Dorm Essentials
+                  <Link href="/shop?category=bags" className="hover:text-primary">
+                    Bags
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shop?category=tech" className="hover:text-primary">
-                    Tech & Accessories
+                  <Link href="/shop?category=accessories" className="hover:text-primary">
+                    Accessories
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?category=organisers" className="hover:text-primary">
+                    Organisers
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?category=journal" className="hover:text-primary">
+                    Journal
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?category=cute-lighting" className="hover:text-primary">
+                    Cute Lighting
                   </Link>
                 </li>
               </ul>

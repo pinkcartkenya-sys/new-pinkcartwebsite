@@ -10,8 +10,10 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search');
     const featured = searchParams.get('featured');
     const active = searchParams.get('active');
+    const minPrice = searchParams.get('minPrice');
+    const maxPrice = searchParams.get('maxPrice');
     
-    console.log('Fetching products with filters:', { categoryId, search, featured, active });
+    console.log('Fetching products with filters:', { categoryId, search, featured, active, minPrice, maxPrice });
     
     // Build filters object
     const filters: any = {};
@@ -31,6 +33,16 @@ export async function GET(request: NextRequest) {
     if (active !== null) {
       filters.active = active === 'true';
     }
+    
+    if (minPrice !== null) {
+      filters.minPrice = parseInt(minPrice);
+    }
+    
+    if (maxPrice !== null) {
+      filters.maxPrice = parseInt(maxPrice);
+    }
+    
+    console.log('API - Price filters:', { minPrice, maxPrice, parsedMin: filters.minPrice, parsedMax: filters.maxPrice });
     
     // Get products with filters
     console.log('API - Filters being applied:', filters);

@@ -1,22 +1,46 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Header } from "@/components/header"
 import { CountdownTimer } from "@/components/countdown-timer"
 import { ProductCard } from "@/components/product-card"
+import { JoinNotification } from "@/components/join-notification"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Heart, Package, Sparkles, TrendingUp, Users, Loader2 } from "lucide-react"
+import { Heart, Package, Sparkles, TrendingUp, Users, Loader2, ChevronDown } from "lucide-react"
 import Link from "next/link"
 import { useProducts } from "@/hooks/use-products"
+import { useJoinNotifications } from "@/hooks/use-join-notifications"
 
 export default function HomePage() {
   const shipmentDeadline = new Date()
   shipmentDeadline.setDate(shipmentDeadline.getDate() + 5)
+  const [showAllTrending, setShowAllTrending] = useState(false)
 
   // Fetch featured products from database
   const { products: trendingProducts, loading: productsLoading, error: productsError } = useProducts({
     // NO FILTERS - Show ALL products from database
   })
+
+  // Join notifications
+  const { currentNotification, isVisible, closeNotification } = useJoinNotifications(trendingProducts)
+
+  // Calculate products to show (2 rows = 6 products on desktop, 4 on mobile)
+  const [isMobile, setIsMobile] = useState(false)
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  const productsPerRow = 3 // Desktop: 3 products per row
+  const mobileProductsPerRow = 2 // Mobile: 2 products per row
+  const initialProductsToShow = isMobile ? mobileProductsPerRow * 2 : productsPerRow * 2 // 2 rows
+  const displayedProducts = showAllTrending ? trendingProducts : trendingProducts.slice(0, initialProductsToShow)
 
   return (
     <div className="min-h-screen">
@@ -55,6 +79,16 @@ export default function HomePage() {
             <Button size="lg" variant="outline" className="btn-responsive rounded-full bg-transparent" asChild>
               <Link href="/how-it-works">How It Works</Link>
             </Button>
+            <Button 
+              size="lg" 
+              className="btn-responsive rounded-full bg-green-500 hover:bg-green-600 text-white border-green-500 hover:border-green-600" 
+              asChild
+            >
+              <a href="https://chat.whatsapp.com/CtFf4VilvRzDeUeRRdTasC?mode=wwt" target="_blank" rel="noopener noreferrer">
+                <Users className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                Join Group
+              </a>
+            </Button>
           </div>
 
           <CountdownTimer targetDate={shipmentDeadline} />
@@ -70,9 +104,9 @@ export default function HomePage() {
               </div>
               <div>
                 <div className="text-xl sm:text-2xl font-bold" style={{ fontFamily: "var(--font-fredoka)" }}>
-                  120+
+                  Live
                 </div>
-                <div className="text-xs sm:text-sm text-muted-foreground">Friends Joined Last Shipment</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">Community Active Now</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -126,11 +160,42 @@ export default function HomePage() {
             </div>
           </div>
         ) : (
-          <div className="grid-responsive-3 gap-4 sm:gap-6">
-            {trendingProducts.map((product) => (
-              <ProductCard key={product._id || product.id} id={product._id || product.id} {...product} />
-            ))}
-          </div>
+          <>
+            <div className="grid-responsive-3 gap-4 sm:gap-6">
+              {displayedProducts.map((product) => (
+                <ProductCard key={product._id || product.id} id={product._id || product.id} {...product} />
+              ))}
+            </div>
+            
+            {trendingProducts.length > initialProductsToShow && (
+              <div className="mt-8 text-center">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => setShowAllTrending(!showAllTrending)}
+                  className="rounded-full"
+                >
+                  {showAllTrending ? (
+                    <>
+                      Show Less
+                      <ChevronDown className="ml-2 h-4 w-4 rotate-180" />
+                    </>
+                  ) : (
+                    <>
+                      Load More
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {showAllTrending 
+                    ? `Showing all ${trendingProducts.length} products` 
+                    : `Showing ${displayedProducts.length} of ${trendingProducts.length} products`
+                  }
+                </p>
+              </div>
+            )}
+          </>
         )}
 
         <div className="mt-6 sm:mt-8 text-center">
@@ -222,18 +287,33 @@ export default function HomePage() {
               <h4 className="mb-4 font-semibold">Browse</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <Link href="/shop?category=girly" className="hover:text-primary">
-                    Girly Finds
+                  <Link href="/shop?category=shoes" className="hover:text-primary">
+                    Shoes
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shop?category=dorm" className="hover:text-primary">
-                    Dorm Essentials
+                  <Link href="/shop?category=bags" className="hover:text-primary">
+                    Bags
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shop?category=tech" className="hover:text-primary">
-                    Tech & Accessories
+                  <Link href="/shop?category=accessories" className="hover:text-primary">
+                    Accessories
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?category=organisers" className="hover:text-primary">
+                    Organisers
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?category=journal" className="hover:text-primary">
+                    Journal
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?category=cute-lighting" className="hover:text-primary">
+                    Cute Lighting
                   </Link>
                 </li>
               </ul>
@@ -287,6 +367,13 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
+
+      {/* Join Notification */}
+      <JoinNotification
+        isVisible={isVisible}
+        onClose={closeNotification}
+        product={currentNotification?.product || null}
+      />
     </div>
   )
 }

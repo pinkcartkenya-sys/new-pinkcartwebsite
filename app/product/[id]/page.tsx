@@ -516,18 +516,33 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               <h4 className="mb-4 font-semibold">Browse</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <Link href="/shop?category=girly" className="hover:text-primary">
-                    Girly Finds
+                  <Link href="/shop?category=shoes" className="hover:text-primary">
+                    Shoes
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shop?category=dorm" className="hover:text-primary">
-                    Dorm Essentials
+                  <Link href="/shop?category=bags" className="hover:text-primary">
+                    Bags
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shop?category=tech" className="hover:text-primary">
-                    Tech & Accessories
+                  <Link href="/shop?category=accessories" className="hover:text-primary">
+                    Accessories
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?category=organisers" className="hover:text-primary">
+                    Organisers
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?category=journal" className="hover:text-primary">
+                    Journal
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?category=cute-lighting" className="hover:text-primary">
+                    Cute Lighting
                   </Link>
                 </li>
               </ul>

@@ -63,25 +63,25 @@ export default function ContactPage() {
               icon: MessageCircle,
               title: "WhatsApp",
               description: "Chat with us instantly",
-              contact: "+254 712 345 678",
+              contact: "+254 794269051",
               action: "Open WhatsApp",
-              href: "https://wa.me/254712345678",
+              href: "https://wa.me/254794269051",
             },
             {
               icon: Mail,
               title: "Email",
               description: "Send us an email",
-              contact: "hello@pinkcart.co.ke",
+              contact: "pinkcartkenya@gmail.com",
               action: "Send Email",
-              href: "mailto:hello@pinkcart.co.ke",
+              href: "mailto:pinkcartkenya@gmail.com",
             },
             {
               icon: Phone,
               title: "Phone",
               description: "Call us directly",
-              contact: "+254 712 345 678",
+              contact: "+254 794269051",
               action: "Call Now",
-              href: "tel:+254712345678",
+              href: "tel:+254794269051",
             },
           ].map((method, index) => (
             <Card key={index} className="responsive-card border-2 text-center">
@@ -289,21 +289,36 @@ export default function ContactPage() {
             </div>
 
             <div>
-              <h4 className="mb-4 font-semibold">Shop</h4>
+              <h4 className="mb-4 font-semibold">Browse</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <Link href="/shop?category=girly" className="hover:text-primary">
-                    Girly Finds
+                  <Link href="/shop?category=shoes" className="hover:text-primary">
+                    Shoes
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shop?category=dorm" className="hover:text-primary">
-                    Dorm Essentials
+                  <Link href="/shop?category=bags" className="hover:text-primary">
+                    Bags
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shop?category=tech" className="hover:text-primary">
-                    Tech & Accessories
+                  <Link href="/shop?category=accessories" className="hover:text-primary">
+                    Accessories
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?category=organisers" className="hover:text-primary">
+                    Organisers
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?category=journal" className="hover:text-primary">
+                    Journal
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shop?category=cute-lighting" className="hover:text-primary">
+                    Cute Lighting
                   </Link>
                 </li>
               </ul>
